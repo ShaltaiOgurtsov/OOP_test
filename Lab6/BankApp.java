@@ -1,115 +1,55 @@
 package Lab6;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.*;
-import java.util.concurrent.ExecutionException;
-import jdk.jshell.spi.ExecutionControl;
-
+import java.awt.Component;
+import java.awt.Dimension;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public class BankApp {
-    public static void LoginScreen(){
-        JFrame frame = new JFrame("Login screen");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 150);
+    private JFrame frame;
+    private JLabel label;
+    public BankApp() {
+        BankExecutor executor = new BankExecutor();
+        JFrame frame = new JFrame("Banking");
+        frame.setSize(300, 100);
 
-        JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JLabel nameLabel = new JLabel("Name: ");
-        panel.add(nameLabel);
+        this.label = new JLabel("Account ammount " + AccountManager.getInstance().getAmmount());
+        label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(label);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        JTextField nameTextField = new JTextField();
-        panel.add(nameTextField);
-
-        JLabel moneyLabel = new JLabel("Money: ");
-        panel.add(moneyLabel);
-
-        JTextField monTextField = new JTextField();
-        panel.add(monTextField);
-
-        JButton submitButton = new JButton("Submit");
-        submitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e){
-                System.out.println("CHEEEEEEECKEEEEEEEED");
-                String accountName = nameTextField.getName();
-                int accountMoney = Integer.parseInt(monTextField.getText());
-
-                AccountManager(new Account(accountMoney, accountName));
-            }
+        JButton creationButton = new JButton("Open account");
+        creationButton.addActionListener(e -> {
+            executor.submitAction(new BankAction());
+            AccountApp accountApp = new AccountApp(AccountManager.getInstance().getLastId(), this);
+            this.label.setText("Account ammoount " + AccountManager.getInstance().getAmmount());
         });
-        panel.add(submitButton);
+        creationButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.add(creationButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 5)));
 
         frame.getContentPane().add(panel);
 
         frame.setVisible(true);
-        frame.setResizable(false);
     }
 
-    public static  void AccountManager(Account account){
-        JFrame frame = new JFrame("Account info");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 200);
-
-        JPanel panel = new JPanel(new GridLayout(4, 2, 5, 5));
-
-        JLabel accountNamLabel = new JLabel(account.getName());
-        panel.add(accountNamLabel);
-
-        JLabel accountMoneyLabel = new JLabel("Ballance: " + account.getMoney());
-        panel.add(accountMoneyLabel);
-
-        JLabel accountIsOpenLabel = new JLabel(account.isOpen() ? "Open" : "Close");
-        panel.add(accountIsOpenLabel);
-
-        JButton despitButton = new JButton("Despit (+500)");
-        panel.add(despitButton);
-
-        JButton withdrawButton = new JButton("Withdraw (-300)");
-        panel.add(withdrawButton);
-
-        JButton toggleStatusButton = new JButton("Toggle status");
-        panel.add(toggleStatusButton);
-
-        JButton refreshButton = new JButton("Refresh");
-        panel.add(refreshButton); 
-
-        frame.getContentPane().add(panel);
-
-        frame.setVisible(true);
-        frame.setResizable(false);
+    public void updateLabelText(String text){
+        SwingUtilities.invokeLater(() -> {
+            label.setText(text);
+        });
     }
 
-
-
-    public static void performAsyncAction(Runnable action){
-        setButtonsEnables(false);
-
-        SwingWorker <Void, Void> worker = new SwingWorker<Void,Void>() {
-            @Override
-            protected Void doInBackground() throws InterruptionException {
-                Thread.sleep(1000);
-                action.run();
-                return null;
-            }
-
-            @Override
-            protected void done(){
-                try {
-                    get();
-                    setButtonsEnabled(true);
-                } catch (InternalException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        worker.execute();
-    }
-
-    
     public static void main(String[] args) {
-        LoginScreen();
+        BankApp app = new BankApp();
     }
 }

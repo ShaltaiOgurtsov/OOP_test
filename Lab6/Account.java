@@ -1,52 +1,29 @@
 package Lab6;
 
 public class Account {
-    private String name;
-    private int money;
-    private boolean isOpen;
-
-    public String getName(){
-        return name;
+    private final int id;
+    private double balance;
+    private static final double withdrawLimit = 500.0;
+    
+    public Account(int id){
+        this.id = id;
+        this.balance = 0;
     }
 
-    public int getMoney(){
-        return money;
+    public synchronized void deposit(double ammount){
+        this.balance += ammount;
     }
 
-    public boolean isOpen(){
-        return isOpen;
-    } 
-
-
-    public Account(int money, String name){
-        this.money = money;
-        this.name = name;
-        this.isOpen = false;
-    }
-
-    public void Open(){
-        this.isOpen = true;
-    }
-
-    public void Close(){
-        this.isOpen = false;
-    }
-
-    public void TakeMoney(int ammount){
-        if (isOpen){
-            int newSumm = this.money - ammount;
-            if (newSumm < 0){
-                System.out.println("INCORRECT SUMM, PLEASE CHOSE BETTER");
-            }
-            else {
-                this.money = newSumm;
-            }
+    public synchronized void withdraw(double ammount){
+        if (ammount > balance || ammount > withdrawLimit){
+            System.err.println("Failed to withdraw");
+        }
+        else{
+            this.balance -= ammount;
         }
     }
 
-    public void PutMoney(int ammount){
-        if (isOpen){
-            this.money += ammount;
-        }
+    public synchronized double getBallance(){
+        return this.balance;
     }
 }

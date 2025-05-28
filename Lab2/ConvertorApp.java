@@ -11,6 +11,7 @@ import javax.swing.*;
 
 public class ConvertorApp {
     static ArrayList<String> conversionItems = new ArrayList<>();
+    
     public static void main(String[] args) {
         JFrame frame = new JFrame();
         frame.setSize(600, 400);

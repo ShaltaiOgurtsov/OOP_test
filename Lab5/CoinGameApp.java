@@ -6,7 +6,8 @@ import java.util.Random;
 import javax.swing.*;
 
 public class CoinGameApp {
-    private static int coinNumber;
+    static Random random = new Random();
+    private static int coinNumber = random.nextInt(30);
     public static void main(String[] args) {
         StartUpGame();
 
@@ -14,7 +15,7 @@ public class CoinGameApp {
         frame.setSize(600, 400);
         frame.setLayout(null);
 
-        var remainingCoins = new JLabel("Placeholder");
+        var remainingCoins = new JLabel(Integer.toString(coinNumber));
         remainingCoins.setBounds(300, 200, 80, 40);
         frame.add(remainingCoins);
 
@@ -26,6 +27,7 @@ public class CoinGameApp {
                 coinNumber -= 1;
                 if (coinNumber == 0){
                     remainingCoins.setText("The player has won");
+                    return;
                 }
 
                 int aiTake = AISimulation.CoinGame(coinNumber);
@@ -34,10 +36,12 @@ public class CoinGameApp {
 
                 if (coinNumber == 0){
                     remainingCoins.setText("AI has won");
+                    return;
                 }
 
 
                 remainingCoins.setText(String.valueOf(coinNumber));
+
             }
         });
         frame.add(takeOne);
@@ -50,6 +54,7 @@ public class CoinGameApp {
                 coinNumber -= 2;
                 if (coinNumber == 0){
                     remainingCoins.setText("The player has won");
+                    return;
                 }
 
                 int aiTake = AISimulation.CoinGame(coinNumber);
@@ -58,6 +63,7 @@ public class CoinGameApp {
 
                 if (coinNumber == 0){
                     remainingCoins.setText("AI has won");
+                    return;
                 }
 
 
